@@ -46,7 +46,7 @@ void AAssignment1_ProjectGameModeBase::StartGame()
 {
 	score = 0;
 
-	GetWorldTimerManager().SetTimer(timerHandle, this, &AAssignment1_ProjectGameModeBase::TimeUp, TimeBeforeSelfDestruct, false, 10.0f);
+	GetWorldTimerManager().SetTimer(timerHandle, this, &AAssignment1_ProjectGameModeBase::TimeUp, TimeBeforeSelfDestruct, false, 50.0f);
 }
 
 

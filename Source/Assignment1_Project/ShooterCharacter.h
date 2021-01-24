@@ -24,7 +24,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -44,30 +44,30 @@ public:
 		void OnEndFire();
 private:
 	UPROPERTY(EditAnywhere)
-	USoundBase* ShootSound;
+		USoundBase* ShootSound;
 
 	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* ActorMesh;
+		UStaticMeshComponent* ActorMesh;
 
 	UPROPERTY(VisibleAnywhere)
-	USceneComponent* ProjectileSpawnPoint;
+		USceneComponent* ProjectileSpawnPoint;
 
 	UPROPERTY(EditAnywhere)
-	UCameraComponent* myCamera;
+		UCameraComponent* myCamera;
 
 	UPROPERTY(EditAnywhere)
-	USpringArmComponent* springArm;
+		USpringArmComponent* springArm;
 	UPROPERTY(EditAnywhere)
 		float MoveSpeed = 500.f;
 	UPROPERTY(EditAnywhere)
 		float RotationSpeed = 200.f;
 	UPROPERTY(EditAnywhere)
-		float RotationRate = 420.0f;
+		float RotationRate = 10.0f;
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AGun> GunClass;
+		TSubclassOf<AGun> GunClass;
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<APlayerGrenade> GrenadeClass;
 
 	UPROPERTY()
-	AGun* Gun;
+		AGun* Gun;
 };

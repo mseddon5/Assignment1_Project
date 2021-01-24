@@ -8,32 +8,32 @@
 // Sets default values
 AShooterCharacter::AShooterCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	springArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	ActorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Actor Mesh"));
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Projectile Spawn Point"));
 	myCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	
+
 	ActorMesh->SetCollisionProfileName(TEXT("Pawn"));
-	
+
 	ActorMesh->SetupAttachment(RootComponent);
 	ProjectileSpawnPoint->SetupAttachment(ActorMesh);
 	springArm->SetupAttachment(ActorMesh);
 	myCamera->SetupAttachment(springArm, USpringArmComponent::SocketName);
-	
+
 	springArm->TargetArmLength = 300.0f;
 	springArm->bEnableCameraLag = true;
 	springArm->CameraLagSpeed = 1.0f;
 	springArm->CameraLagMaxDistance = 1.5f;
-	
+
 	springArm->SetRelativeRotation(FRotator(-45.0f, 0.f, 0.f));
 	ProjectileSpawnPoint->SetRelativeLocation(FVector(36.0f, 38.0f, 64.0f));
-	
 
-	
-	
+
+
+
 }
 
 // Called when the game starts or when spawned
@@ -82,7 +82,12 @@ void AShooterCharacter::LookRight(float AxisValue)
 
 void AShooterCharacter::LookUp(float AxisValue)
 {
-	AddControllerPitchInput(AxisValue * RotationRate * GetWorld()->GetDeltaSeconds());
+	float rotTemp = springArm->GetRelativeRotation().Pitch + AxisValue;
+	if (rotTemp < 30 && rotTemp > -70)
+	{
+		springArm->AddLocalRotation(FRotator(AxisValue, 0.0f, 0.0f));
+	}
+
 }
 void AShooterCharacter::OnBeginFire()
 {
@@ -99,5 +104,3 @@ void AShooterCharacter::OnEndFire()
 		TempNade->SetOwner(this);
 	}
 }
-
-

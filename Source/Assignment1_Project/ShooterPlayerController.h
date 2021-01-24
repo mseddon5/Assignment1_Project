@@ -8,7 +8,7 @@
 #include "ShooterPlayerController.generated.h"
 
 /**
- * 
+ *
  */
 
 class AGun;
@@ -36,28 +36,28 @@ public:
 		int GetNumberOfShots();
 
 	UPROPERTY(EditAnywhere)
-	int NumberOfShots;
+		int NumberOfShots;
 
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<AGun> GunClass;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UUserWidget> WelcomeClass;
+		TSubclassOf<UUserWidget> WelcomeClass;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UUserWidget> WelcomeBulletCountClass;
+		TSubclassOf<UUserWidget> WelcomeBulletCountClass;
 
 
 
 	UPROPERTY()
-	AGun* Gun;
+		AGun* Gun;
 
 	UPROPERTY()
-	UUserWidget* WelcomeScreen;
+		UUserWidget* WelcomeScreen;
 
 	UPROPERTY()
-	UUserWidget* WelcomeBulletCount;
+		UUserWidget* WelcomeBulletCount;
 
 
-	
-}; 
+
+};
