@@ -32,12 +32,13 @@ void AShooterPlayerController::SetupInputComponent() {
 	Super::SetupInputComponent();
 	check(InputComponent);
 
+	
 	InputComponent->BindAction(TEXT("Shoot"), EInputEvent::IE_Pressed, this, &AShooterPlayerController::Shoot);
 	InputComponent->BindAxis(TEXT("MoveForward"), this, &AShooterPlayerController::MoveForward);
 	InputComponent->BindAxis(TEXT("MoveRight"), this, &AShooterPlayerController::MoveRight);
 	InputComponent->BindAxis(TEXT("LookRight"), this, &AShooterPlayerController::LookRight);
 	InputComponent->BindAxis(TEXT("LookUp"), this, &AShooterPlayerController::LookUp);
-
+	
 
 }
 
@@ -86,3 +87,5 @@ int AShooterPlayerController::GetNumberOfShots()
 {
 	return NumberOfShots;
 }
+
+

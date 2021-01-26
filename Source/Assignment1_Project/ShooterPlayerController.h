@@ -35,6 +35,8 @@ public:
 	UFUNCTION(BlueprintPure)
 		int GetNumberOfShots();
 
+
+
 	UPROPERTY(EditAnywhere)
 		int NumberOfShots;
 

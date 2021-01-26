@@ -4,7 +4,7 @@
 #include "ShooterCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Gun.h"
-
+#include "Assignment1_ProjectGameModeBase.h"
 // Sets default values
 AShooterCharacter::AShooterCharacter()
 {
@@ -54,7 +54,18 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction("Fire", IE_Released, this, &AShooterCharacter::OnEndFire);
+	PlayerInputComponent->BindAction(TEXT("Fire"), EInputEvent::IE_Released, this, &AShooterCharacter::OnEndFire);
+}
+
+float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	float DamageToApply = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	DamageToApply = FMath::Min(Health, DamageToApply);
+	Health -= DamageToApply;
+	UE_LOG(LogTemp, Warning, TEXT("Health left %f"), Health);
+
+	return DamageToApply;
 }
 
 void AShooterCharacter::MoveForward(float AxisValue)
@@ -103,4 +114,9 @@ void AShooterCharacter::OnEndFire()
 		APlayerGrenade* TempNade = GetWorld()->SpawnActor<APlayerGrenade>(GrenadeClass, SpawnLocation, SpawnRotation);
 		TempNade->SetOwner(this);
 	}
+}
+
+bool AShooterCharacter::IsDead() const
+{
+	return Health <= 0;
 }
