@@ -19,7 +19,7 @@ public:
 
 public:
 	UFUNCTION()
-	void PointScored();
+	void ShotsHit();
 	UFUNCTION()
 	void TimeUp();
 	UFUNCTION()
@@ -33,7 +33,10 @@ protected:
 private:
 	UPROPERTY(EditAnywhere)
 	int TargetPoints = 10;
+
 	float TimeBeforeSelfDestruct = 10.0f;
-	int score;
+
+	int score = 0;
+
 	FTimerHandle timerHandle;
 };

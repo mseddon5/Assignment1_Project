@@ -10,7 +10,7 @@
 #include "ShooterCharacter.generated.h"
 
 class AGun;
-
+class AAssignment1_ProjectGameModeBase;
 UCLASS()
 class ASSIGNMENT1_PROJECT_API AShooterCharacter : public ACharacter
 {
@@ -32,6 +32,8 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController*
 		EventInstigator, AActor* DamageCauser) override;
 
+	UPROPERTY(VisibleAnywhere)
+		AAssignment1_ProjectGameModeBase* gameModeRef;
 	UFUNCTION()
 		void MoveForward(float AxisValue);
 	UFUNCTION(BlueprintPure)

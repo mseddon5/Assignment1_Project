@@ -3,6 +3,7 @@
 
 #include "Gun.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Assignment1_ProjectGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
 // Sets default values
@@ -13,12 +14,21 @@ AGun::AGun()
 
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	SetRootComponent(Root);
-
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
 }
 
-void AGun::PullTrigger()
+// Called when the game starts or when spawned
+void AGun::BeginPlay()
+{
+	Super::BeginPlay();
+
+	
+
+	/*Mesh.AddDynamic(this, &AGun::PullTrigger);*/
+}
+
+void AGun::PullTrigger(/*AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& HitResult*/)
 {
 	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, Mesh, TEXT("MuzzleFlashSocket"));
 
@@ -46,21 +56,24 @@ void AGun::PullTrigger()
 	{
 		FVector ShotDirection = -Rotation.Vector();
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Hit.Location, ShotDirection.Rotation());
-		
+		AActor* ProjectileOwner = GetOwner();
 		AActor* HitActor = Hit.GetActor();
 		if (HitActor != nullptr)
 		{
-			FPointDamageEvent DamageEvent(Damage, Hit, ShotDirection, nullptr);
-			HitActor->TakeDamage(Damage, DamageEvent, OwnerController, this);
+			//FPointDamageEvent DamageEvent(Damage, Hit, ShotDirection, nullptr);
+			//HitActor->TakeDamage(Damage, DamageEvent, OwnerController, this);
+			/*CallShotHit->ShotsHit();*/
+			UGameplayStatics::ApplyDamage(
+				HitActor, //actor that will be damaged
+				gameDamage, //the base damage to apply
+				ProjectileOwner->GetInstigatorController(), //Controller that was responsible for causing the damage
+				this, //actor that actually caused the damage
+				UDamageType::StaticClass()
+				
+			);
+			
 		}
 	}
-}
-
-// Called when the game starts or when spawned
-void AGun::BeginPlay()
-{
-	Super::BeginPlay();
-	
 }
 
 // Called every frame

@@ -47,6 +47,7 @@ void AShooterCharacter::BeginPlay()
 	Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
 	Gun->SetOwner(this);
 
+	gameModeRef = Cast<AAssignment1_ProjectGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 }
 
 // Called to bind functionality to input
@@ -64,9 +65,11 @@ float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 	DamageToApply = FMath::Min(Health, DamageToApply);
 	Health -= DamageToApply;
 	UE_LOG(LogTemp, Warning, TEXT("Health left %f"), Health);
-
+	
+	gameModeRef->ShotsHit();
 	return DamageToApply;
 }
+	
 
 void AShooterCharacter::MoveForward(float AxisValue)
 {
