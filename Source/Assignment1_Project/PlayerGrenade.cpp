@@ -56,6 +56,8 @@ void APlayerGrenade::OnHit(AActor* SelfActor, AActor* OtherActor, FVector Normal
 			this, //actor that actually caused the damage
 			UDamageType::StaticClass()
 		);
+		Destroy();
 	}
+	
 }
 

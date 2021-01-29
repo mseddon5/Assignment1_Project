@@ -16,7 +16,7 @@ class ASSIGNMENT1_PROJECT_API AShooter_AIController : public AAIController
 	
 public:
 	virtual void Tick(float DeltaSeconds) override;
-
+	//virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
 protected:
 	virtual void BeginPlay() override;
 
@@ -25,5 +25,7 @@ private:
 		float AcceptanceRadius = 200;
 	UPROPERTY(EditAnywhere)
 		class UBehaviorTree* AIBehavior;
+
+
 	bool IsInFront(AActor* ActorToCheck);
 };

@@ -2,6 +2,8 @@
 
 
 #include "ShooterCharacter.h"
+#include "Waypoints.h"
+#include "Shooter_AIController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Gun.h"
 #include "Assignment1_ProjectGameModeBase.h"
@@ -46,8 +48,13 @@ void AShooterCharacter::BeginPlay()
 	Gun = GetWorld()->SpawnActor<AGun>(GunClass);
 	Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
 	Gun->SetOwner(this);
+	
 
 	gameModeRef = Cast<AAssignment1_ProjectGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	
+
+	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), AWaypoints::StaticClass(), Waypoints);
+	//MoveToWaypoints();
 }
 
 // Called to bind functionality to input
@@ -60,15 +67,27 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	float DamageToApply = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	DamagePawn = Cast <APawn>(DamageCauser);
+	
+		if (DamagePawn->IsPlayerControlled())
+		{
+			gameModeRef->ShotsHit();
+		}
+		else
+		{
+			gameModeRef->AIShotsHit();
+		}
+	
 
-	DamageToApply = FMath::Min(Health, DamageToApply);
-	Health -= DamageToApply;
+	Health -= DamageAmount;
 	UE_LOG(LogTemp, Warning, TEXT("Health left %f"), Health);
 	
-	gameModeRef->ShotsHit();
-	return DamageToApply;
+
+	return DamageAmount;
+	
 }
+
 	
 
 void AShooterCharacter::MoveForward(float AxisValue)
@@ -123,3 +142,29 @@ bool AShooterCharacter::IsDead() const
 {
 	return Health <= 0;
 }
+
+//void AShooterCharacter::MoveToWaypoints()
+//{
+//	AShooter_AIController* EnemyAIController = Cast<AShooter_AIController>(GetController());
+//
+//	if (EnemyAIController)
+//	{
+//		if (CurrentWaypoint <= Waypoints.Num())
+//		{
+//			for (AActor* Waypoint : Waypoints)
+//			{
+//				AWaypoints* WaypointItr = Cast<AWaypoints>(Waypoint);
+//
+//				if (WaypointItr)
+//				{
+//					if (WaypointItr->GetWaypointOrder() == CurrentWaypoint)
+//					{
+//						EnemyAIController->MoveToActor(WaypointItr, 5.0f, false);
+//						CurrentWaypoint++;
+//						break;
+//					}
+//				}
+//			}
+//		}
+//	}
+//}

@@ -27,8 +27,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-
-
+	UPROPERTY()
+		AAssignment1_ProjectGameModeBase* gameModeRef;
 
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* Root;
@@ -47,5 +47,5 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float Damage = 10;
-	float gameDamage = 1;
+	float gameDamage = 10;
 };

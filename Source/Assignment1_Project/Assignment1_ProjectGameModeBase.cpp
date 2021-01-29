@@ -2,6 +2,7 @@
 
 
 #include "Assignment1_ProjectGameModeBase.h"
+#include "Shooter_AIController.h"
 #include "ShooterPlayerController.h"
 #include <Kismet/GameplayStatics.h>
 
@@ -16,12 +17,25 @@ void AAssignment1_ProjectGameModeBase::BeginPlay()
 	StartGame();
 }
 
+
 void AAssignment1_ProjectGameModeBase::StartGame()
 {
 	score = 0;
 
 	GetWorldTimerManager().SetTimer(timerHandle, this, &AAssignment1_ProjectGameModeBase::TimeUp, TimeBeforeSelfDestruct, false, 50.0f);
 }
+
+void AAssignment1_ProjectGameModeBase::PawnKilled(APawn* PawnKilled)
+{
+	APlayerController* PlayerController = Cast<APlayerController>(PawnKilled->GetController());
+	if (PlayerController != nullptr)
+	{
+		GameOver(false);
+	}
+
+	GameOver(true);
+}
+
 void AAssignment1_ProjectGameModeBase::ShotsHit()
 {
 	score++;
@@ -31,6 +45,14 @@ void AAssignment1_ProjectGameModeBase::ShotsHit()
 	}
 }
 
+void AAssignment1_ProjectGameModeBase::AIShotsHit()
+{
+	AIScore++;
+	if (AIScore >= TargetPoints)
+	{
+		GameOver(false);
+	}
+}
 void AAssignment1_ProjectGameModeBase::TimeUp()
 {
 	GameOver(false);

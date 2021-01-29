@@ -21,12 +21,15 @@ public:
 	UFUNCTION()
 	void ShotsHit();
 	UFUNCTION()
+	void AIShotsHit();
+	UFUNCTION()
 	void TimeUp();
 	UFUNCTION()
 	void GameOver(bool PlayerWon);
 	UFUNCTION()
 	void StartGame();
-
+	UFUNCTION()
+	void PawnKilled(APawn* PawnKilled);
 protected:
 	virtual void BeginPlay() override;
 
@@ -37,6 +40,7 @@ private:
 	float TimeBeforeSelfDestruct = 10.0f;
 
 	int score = 0;
+	int AIScore = 0;
 
 	FTimerHandle timerHandle;
 };

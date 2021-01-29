@@ -8,8 +8,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "ShooterCharacter.generated.h"
-
 class AGun;
+class APawn;
 class AAssignment1_ProjectGameModeBase;
 UCLASS()
 class ASSIGNMENT1_PROJECT_API AShooterCharacter : public ACharacter
@@ -31,9 +31,9 @@ public:
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController*
 		EventInstigator, AActor* DamageCauser) override;
+	//UFUNCTION()
+	//void MoveToWaypoints();
 
-	UPROPERTY(VisibleAnywhere)
-		AAssignment1_ProjectGameModeBase* gameModeRef;
 	UFUNCTION()
 		void MoveForward(float AxisValue);
 	UFUNCTION(BlueprintPure)
@@ -51,6 +51,9 @@ public:
 	UFUNCTION()
 		void OnEndFire();
 private:
+	UPROPERTY()
+		AAssignment1_ProjectGameModeBase* gameModeRef;
+
 	UPROPERTY(EditAnywhere)
 		USoundBase* ShootSound;
 
@@ -73,6 +76,7 @@ private:
 		float RotationRate = 10.0f;
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<AGun> GunClass;
+
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<APlayerGrenade> GrenadeClass;
 
@@ -81,7 +85,14 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 		float Health = MaxHealth;
+	//UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
+	//	int CurrentWaypoint;
+
+	//TArray<AActor*> Waypoints;
 
 	UPROPERTY()
 		AGun* Gun;
+
+	UPROPERTY()
+		APawn* DamagePawn;
 };
