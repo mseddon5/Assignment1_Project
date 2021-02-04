@@ -49,13 +49,17 @@ void APlayerGrenade::OnHit(AActor* SelfActor, AActor* OtherActor, FVector Normal
 
 	if (OtherActor->GetClass()->IsChildOf(AShooterCharacter::StaticClass()))
 	{
-		UGameplayStatics::ApplyDamage(
-			OtherActor, //actor that will be damaged
-			Damage, //the base damage to apply
-			ProjectileOwner->GetInstigatorController(), //Controller that was responsible for causing the damage
-			this, //actor that actually caused the damage
-			UDamageType::StaticClass()
-		);
+		
+		if (OtherActor != GetOwner())
+		{
+			UGameplayStatics::ApplyDamage(
+				OtherActor, //actor that will be damaged
+				Damage, //the base damage to apply
+				ProjectileOwner->GetInstigatorController(), //Controller that was responsible for causing the damage
+				GetOwner(), //actor that actually caused the damage
+				UDamageType::StaticClass()
+			);
+		}
 		Destroy();
 	}
 	
