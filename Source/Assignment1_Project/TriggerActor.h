@@ -11,8 +11,8 @@ UCLASS()
 class ASSIGNMENT1_PROJECT_API ATriggerActor : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ATriggerActor();
 
@@ -23,17 +23,20 @@ protected:
 private:
 	UPROPERTY(EditAnywhere)
 		USoundBase* TriggerEnterSound;
+
 	UPROPERTY(EditAnywhere)
 		USoundBase* TriggerExitSound;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* TriggerMesh;
+
 	UPROPERTY(EditAnywhere)
 		UBoxComponent* CollisionBox;
+
 	UFUNCTION()
 		void OnOverlapBegin(UPrimitiveComponent* OverlappedComp,
 			AActor* OtherActor,
@@ -41,6 +44,7 @@ public:
 			int32 OtherBodyIndex,
 			bool bFromSweep,
 			const FHitResult& SweepResult);
+
 	UFUNCTION()
 		void OnOverlapEnd(UPrimitiveComponent* OverlappedComp,
 			AActor* OtherActor,

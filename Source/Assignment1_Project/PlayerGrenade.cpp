@@ -10,24 +10,34 @@
 // Sets default values
 APlayerGrenade::APlayerGrenade()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//creates the default subobjects
 	GrenadeMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Grenade Mesh"));
-	GrenadeMesh->SetSimulatePhysics(true);
+	GrenadeMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Grenade Movement"));
+
+	//sets the Grenade mesh as the root component
 	SetRootComponent(GrenadeMesh);
+
+	//makes the grenade simuulate physics in game. Also enables rigid body collisions
+	GrenadeMesh->SetSimulatePhysics(true);
 	GrenadeMesh->SetNotifyRigidBodyCollision(true);
 
-	GrenadeMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Grenade Movement"));
+	//sets the initial and maximum speed of the grenade
 	GrenadeMovement->MaxSpeed = MovementSpeed;
 	GrenadeMovement->InitialSpeed = MovementSpeed;
+	
+
 	InitialLifeSpan = 6.0f;
+
 }
 
 // Called when the game starts or when spawned
 void APlayerGrenade::BeginPlay()
 {
 	Super::BeginPlay();
+	//adds a dynamic delegate for the OnHit function
 	OnActorHit.AddDynamic(this, &APlayerGrenade::OnHit);
 }
 
@@ -40,18 +50,20 @@ void APlayerGrenade::Tick(float DeltaTime)
 
 void APlayerGrenade::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-	AActor* ProjectileOwner = GetOwner();
 
+	//sets the projectile owner. Does a basic nullptr check to avoid UE4 issues
+	AActor* ProjectileOwner = GetOwner();
 	if (!ProjectileOwner) {
-		//UE_LOG Error
 		return;
 	}
 
+	//if the actor that will be damaged is a child of AShooterCharacter (if the grenade hits the player and not a random actor on the map) returns true
 	if (OtherActor->GetClass()->IsChildOf(AShooterCharacter::StaticClass()))
 	{
-		
+		// if the actor that will be damaged isnt the same actor as the one causing the damage (So the player cant kill themself) returns true
 		if (OtherActor != GetOwner())
 		{
+			//applies damage as follows:
 			UGameplayStatics::ApplyDamage(
 				OtherActor, //actor that will be damaged
 				Damage, //the base damage to apply
@@ -60,8 +72,8 @@ void APlayerGrenade::OnHit(AActor* SelfActor, AActor* OtherActor, FVector Normal
 				UDamageType::StaticClass()
 			);
 		}
+		//destroys the grenade after any collision with a chold of AShooterCharacter (player or AI)
 		Destroy();
 	}
-	
-}
 
+}

@@ -25,17 +25,24 @@ protected:
 
 public:
 	virtual void SetupInputComponent();
+
 	virtual void MoveForward(float AxisValue);
+
 	virtual void Shoot();
+
 	virtual void MoveRight(float AxisValue);
+
 	virtual void LookRight(float AxisValue);
+
 	virtual void LookUp(float AxisValue);
+
 	AShooterCharacter* MyPawn;
 
 	UFUNCTION(BlueprintPure)
 		int GetNumberOfShots();
 
-
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget> MiniMapClass;
 
 	UPROPERTY(EditAnywhere)
 		int NumberOfShots;
@@ -60,6 +67,6 @@ public:
 	UPROPERTY()
 		UUserWidget* WelcomeBulletCount;
 
-
-
+	UPROPERTY()
+		UUserWidget* MiniMap;
 };

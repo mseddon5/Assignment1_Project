@@ -7,22 +7,24 @@
 #include "Shooter_AIController.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class ASSIGNMENT1_PROJECT_API AShooter_AIController : public AAIController
 {
 	GENERATED_BODY()
-	
+
 public:
 	virtual void Tick(float DeltaSeconds) override;
-	//virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
+	
 protected:
 	virtual void BeginPlay() override;
 
 private:
+	
 	UPROPERTY(EditAnywhere)
 		float AcceptanceRadius = 200;
+
 	UPROPERTY(EditAnywhere)
 		class UBehaviorTree* AIBehavior;
 

@@ -6,6 +6,7 @@
 #include "Shooter_AIController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Gun.h"
+#include "Components/SceneCaptureComponent2D.h"
 #include "Assignment1_ProjectGameModeBase.h"
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -13,28 +14,34 @@ AShooterCharacter::AShooterCharacter()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//sets the default subobjects
 	springArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	mapArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Map Arm"));
 	ActorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Actor Mesh"));
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Projectile Spawn Point"));
 	myCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	mapComponent = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("Map Component"));
+
+	//attaches the component to their relavent components
+	ActorMesh->SetupAttachment(RootComponent);
+	mapComponent->SetupAttachment(mapArm);
+	ProjectileSpawnPoint->SetupAttachment(ActorMesh);
+	springArm->SetupAttachment(ActorMesh);
+	mapArm->SetupAttachment(ActorMesh);
+	myCamera->SetupAttachment(springArm, USpringArmComponent::SocketName);
 
 	ActorMesh->SetCollisionProfileName(TEXT("Pawn"));
 
-	ActorMesh->SetupAttachment(RootComponent);
-	ProjectileSpawnPoint->SetupAttachment(ActorMesh);
-	springArm->SetupAttachment(ActorMesh);
-	myCamera->SetupAttachment(springArm, USpringArmComponent::SocketName);
-
-	springArm->TargetArmLength = 300.0f;
+	//sets the spring arm up to match what a third person shooter should be
+	springArm->TargetArmLength = TargetArmLengthVariable;
 	springArm->bEnableCameraLag = true;
-	springArm->CameraLagSpeed = 1.0f;
-	springArm->CameraLagMaxDistance = 1.5f;
+	springArm->CameraLagSpeed = LagSpeedVariable;
+	springArm->CameraLagMaxDistance = CameraLagMaxDistanceVariable;
 
-	springArm->SetRelativeRotation(FRotator(-45.0f, 0.f, 0.f));
-	ProjectileSpawnPoint->SetRelativeLocation(FVector(36.0f, 38.0f, 64.0f));
-
-
-
+	//sets the relative locations and rotations
+	springArm->SetRelativeRotation(SpringArmRelativeRotation);
+	ProjectileSpawnPoint->SetRelativeLocation(ProjectileSpawnPointRelativeLocation);
+	mapArm->SetRelativeRotation(MapArmRelativeRotation);
 
 }
 
@@ -42,16 +49,18 @@ AShooterCharacter::AShooterCharacter()
 void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
+	//hides the bones in the skeletal mesh to allow for our own gun to be added
 	GetMesh()->HideBoneByName(TEXT("weapon_r"), EPhysBodyOp::PBO_None);
 
+	//
 	Gun = GetWorld()->SpawnActor<AGun>(GunClass);
 	Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
 	Gun->SetOwner(this);
-	
+
 
 	gameModeRef = Cast<AAssignment1_ProjectGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-	
+
 
 	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), AWaypoints::StaticClass(), Waypoints);
 	//MoveToWaypoints();
@@ -68,53 +77,59 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	//sets variable
 	DamagePawn = Cast <APawn>(DamageCauser);
-	
-		if (DamagePawn->IsPlayerControlled())
-		{
-			gameModeRef->ShotsHit();
-		}
-		else
-		{
-			gameModeRef->AIShotsHit();
-		}
-	
 
+	//if the pawn that was damaged was player controlled, returns true, if not, returns false
+	if (DamagePawn->IsPlayerControlled())
+	{
+		//calls function in the game mode (Player)
+		gameModeRef->ShotsHit();
+	}
+	else
+	{
+		//calls function in the game mode (AI)
+		gameModeRef->AIShotsHit();
+	}
+
+	//takes the damage amount away from current HP. Returns the amount of damage.
 	Health -= DamageAmount;
-	UE_LOG(LogTemp, Warning, TEXT("Health left %f"), Health);
-	
-
 	return DamageAmount;
-	
+
 }
 
-	
+
 
 void AShooterCharacter::MoveForward(float AxisValue)
 {
-
+	//multiplies the forward vector by the function parameter
 	AddMovementInput(GetActorForwardVector() * AxisValue);
 }
 
 void AShooterCharacter::MoveRight(float AxisValue)
 {
-
+	//multiplies the right vector by the function parameter
 	AddMovementInput(GetActorRightVector() * AxisValue);
 }
 
 void AShooterCharacter::Shoot()
 {
-	UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShootSound, GetActorLocation(), 1.0f, 1.0f, 0.0f);
+	//plays a sound at the instigators location, then calls the pulltrigger function inside Gun
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShootSound, GetActorLocation(), VolumeVariable, PitchVariable, StartTimeVariable);
 	Gun->PullTrigger();
 }
 
 void AShooterCharacter::LookRight(float AxisValue)
 {
+	//multiplies the values together to calculate how much to look right
 	AddControllerYawInput(AxisValue * RotationRate * GetWorld()->GetDeltaSeconds());
 }
 
 void AShooterCharacter::LookUp(float AxisValue)
 {
+	//creates a temporary variable that contains the current pitch rotation plus the function variable
+	// if the result is in range of the conditions, then returns true (stops the player to infinitly look up/down
 	float rotTemp = springArm->GetRelativeRotation().Pitch + AxisValue;
 	if (rotTemp < 30 && rotTemp > -70)
 	{
@@ -129,10 +144,12 @@ void AShooterCharacter::OnBeginFire()
 
 void AShooterCharacter::OnEndFire()
 {
-	if (GrenadeClass) { //checks teabag projectile has been set in the editor
+	if (GrenadeClass) { //checks grenade projectile has been set in the editor
+		//sets the spawn location and rotation
 		FVector SpawnLocation = ProjectileSpawnPoint->GetComponentLocation();
 		FRotator SpawnRotation = ProjectileSpawnPoint->GetComponentRotation();
 
+		//spawns a grenade and sets the owner to the controller
 		APlayerGrenade* TempNade = GetWorld()->SpawnActor<APlayerGrenade>(GrenadeClass, SpawnLocation, SpawnRotation);
 		TempNade->SetOwner(this);
 	}
@@ -140,31 +157,6 @@ void AShooterCharacter::OnEndFire()
 
 bool AShooterCharacter::IsDead() const
 {
+	//bool used to check if the player or AI is dead
 	return Health <= 0;
 }
-
-//void AShooterCharacter::MoveToWaypoints()
-//{
-//	AShooter_AIController* EnemyAIController = Cast<AShooter_AIController>(GetController());
-//
-//	if (EnemyAIController)
-//	{
-//		if (CurrentWaypoint <= Waypoints.Num())
-//		{
-//			for (AActor* Waypoint : Waypoints)
-//			{
-//				AWaypoints* WaypointItr = Cast<AWaypoints>(Waypoint);
-//
-//				if (WaypointItr)
-//				{
-//					if (WaypointItr->GetWaypointOrder() == CurrentWaypoint)
-//					{
-//						EnemyAIController->MoveToActor(WaypointItr, 5.0f, false);
-//						CurrentWaypoint++;
-//						break;
-//					}
-//				}
-//			}
-//		}
-//	}
-//}

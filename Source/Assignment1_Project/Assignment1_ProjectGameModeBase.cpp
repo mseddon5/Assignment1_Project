@@ -6,25 +6,25 @@
 #include "ShooterPlayerController.h"
 #include <Kismet/GameplayStatics.h>
 
+//constructor, sets the PlayerControllerClass to contain a static class of AShooterPlayerController
 AAssignment1_ProjectGameModeBase::AAssignment1_ProjectGameModeBase() {
 	PlayerControllerClass = AShooterPlayerController::StaticClass();
 
 }
-
+//starts the game
 void AAssignment1_ProjectGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 	StartGame();
 }
 
-
+//sets the score to 0 and starts a timer to count down from 50 seconds. When the time is up, calls the AAssignment1_ProjectGameModeBase::TimeUp function.
 void AAssignment1_ProjectGameModeBase::StartGame()
 {
-	score = 0;
-
-	GetWorldTimerManager().SetTimer(timerHandle, this, &AAssignment1_ProjectGameModeBase::TimeUp, TimeBeforeSelfDestruct, false, 50.0f);
+	GetWorldTimerManager().SetTimer(timerHandle, this, &AAssignment1_ProjectGameModeBase::TimeUp, TimeBeforeSelfDestruct, false, TimeBeforeSelfDestruct);
 }
 
+// if the player dies, calls the lose level, if the player wins, calls the win level
 void AAssignment1_ProjectGameModeBase::PawnKilled(APawn* PawnKilled)
 {
 	APlayerController* PlayerController = Cast<APlayerController>(PawnKilled->GetController());
@@ -36,6 +36,7 @@ void AAssignment1_ProjectGameModeBase::PawnKilled(APawn* PawnKilled)
 	GameOver(true);
 }
 
+//a counter function. If the player hits 10 shots, calls the win level
 void AAssignment1_ProjectGameModeBase::ShotsHit()
 {
 	score++;
@@ -44,7 +45,7 @@ void AAssignment1_ProjectGameModeBase::ShotsHit()
 		GameOver(true);
 	}
 }
-
+//a counter function. If the AI hits 10 shots, calls the lose level
 void AAssignment1_ProjectGameModeBase::AIShotsHit()
 {
 	AIScore++;
@@ -53,11 +54,13 @@ void AAssignment1_ProjectGameModeBase::AIShotsHit()
 		GameOver(false);
 	}
 }
+//the function referenced in the StartGame function. Calls lose level when time is up.
 void AAssignment1_ProjectGameModeBase::TimeUp()
 {
 	GameOver(false);
 }
 
+//function containing the bool results from the prev. functions. 
 void AAssignment1_ProjectGameModeBase::GameOver(bool PlayerWon)
 {
 	if (PlayerWon)
@@ -69,7 +72,3 @@ void AAssignment1_ProjectGameModeBase::GameOver(bool PlayerWon)
 		UGameplayStatics::OpenLevel(GetWorld(), "LoseLevel");
 	}
 }
-
-
-
-

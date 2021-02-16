@@ -9,12 +9,13 @@
 
 
 /**
- * 
+ *
  */
 UCLASS()
 class ASSIGNMENT1_PROJECT_API UMyBTService_PlayerLocationIfSeen : public UBTService_BlackboardBase
 {
 	GENERATED_BODY()
+
 public:
 	UMyBTService_PlayerLocationIfSeen();
 

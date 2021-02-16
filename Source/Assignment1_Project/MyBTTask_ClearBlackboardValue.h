@@ -7,13 +7,13 @@
 #include "MyBTTask_ClearBlackboardValue.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class ASSIGNMENT1_PROJECT_API UMyBTTask_ClearBlackboardValue : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
-	
+
 public:
 
 	UMyBTTask_ClearBlackboardValue();

@@ -11,8 +11,8 @@ UCLASS()
 class ASSIGNMENT1_PROJECT_API AGun : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AGun();
 
@@ -22,7 +22,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -31,21 +31,27 @@ private:
 		AAssignment1_ProjectGameModeBase* gameModeRef;
 
 	UPROPERTY(VisibleAnywhere)
-	USceneComponent* Root;
+		USceneComponent* Root;
 
 	UPROPERTY(VisibleAnywhere)
-	USkeletalMeshComponent* Mesh;
+		USkeletalMeshComponent* Mesh;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystem* MuzzleFlash;
+		UParticleSystem* MuzzleFlash;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystem* ImpactEffect;
+		UParticleSystem* ImpactEffect;
 
+	
 	UPROPERTY(EditAnywhere)
-	float MaxRange = 1000;
+		float MaxRange = 1000;
 
+	
 	UPROPERTY(EditAnywhere)
-	float Damage = 10;
+		float ImpulseForce = 1000.0f;
+
+	
+	UPROPERTY(EditAnywhere)
+		float Damage = 10;
 	float gameDamage = 10;
 };

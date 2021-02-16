@@ -11,8 +11,8 @@ UCLASS()
 class ASSIGNMENT1_PROJECT_API APlayerGrenade : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	APlayerGrenade();
 
@@ -20,19 +20,23 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 private:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* GrenadeMesh;
+
 	UPROPERTY(EditAnywhere)
 		UProjectileMovementComponent* GrenadeMovement;
+
 	UPROPERTY(EditAnywhere)
 		float MovementSpeed = 500.0f;
+
 	UPROPERTY(EditAnywhere)
 		float Damage = 10.0f;
+
 	UFUNCTION()
 		void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 };

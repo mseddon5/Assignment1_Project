@@ -12,9 +12,10 @@ UMyBTTask_ClearBlackboardValue::UMyBTTask_ClearBlackboardValue()
 EBTNodeResult::Type UMyBTTask_ClearBlackboardValue::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
-	
+
+	//clears the value of the blackboard component
 	OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey());
 
-
+	//tasks returns as a success
 	return EBTNodeResult::Succeeded;
 }

@@ -16,7 +16,9 @@ class ASSIGNMENT1_PROJECT_API AWaypoints : public AStaticMeshActor
 
 public:
 	int GetWaypointOrder();
+
 private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"));
 	int WaypointOrder;
+
 };
