@@ -3,6 +3,7 @@
 
 #include "Assignment1_ProjectGameModeBase.h"
 #include "Shooter_AIController.h"
+#include "TimerManager.h"
 #include "ShooterPlayerController.h"
 #include <Kismet/GameplayStatics.h>
 
@@ -36,6 +37,7 @@ void AAssignment1_ProjectGameModeBase::PawnKilled(APawn* PawnKilled)
 	GameOver(true);
 }
 
+
 //a counter function. If the player hits 10 shots, calls the win level
 void AAssignment1_ProjectGameModeBase::ShotsHit()
 {
@@ -63,7 +65,7 @@ void AAssignment1_ProjectGameModeBase::TimeUp()
 //function containing the bool results from the prev. functions. 
 void AAssignment1_ProjectGameModeBase::GameOver(bool PlayerWon)
 {
-	if (PlayerWon)
+	if (PlayerWon) 
 	{
 		UGameplayStatics::OpenLevel(GetWorld(), "WinLevel");
 	}

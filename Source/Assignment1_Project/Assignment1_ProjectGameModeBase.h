@@ -18,6 +18,7 @@ public:
 	AAssignment1_ProjectGameModeBase();
 
 public:
+
 	UFUNCTION()
 		void ShotsHit();
 
@@ -33,6 +34,7 @@ public:
 	UFUNCTION()
 		void StartGame();
 
+
 	UFUNCTION()
 		void PawnKilled(APawn* PawnKilled);
 
@@ -45,7 +47,7 @@ private:
 		int TargetPoints = 10;
 	
 	UPROPERTY(EditAnywhere)
-	float TimeBeforeSelfDestruct = 50.0f;
+	float TimeBeforeSelfDestruct = 15.0f;
 
 	UPROPERTY(EditAnywhere)
 	int score = 0;
@@ -55,4 +57,5 @@ private:
 
 	UPROPERTY()
 	FTimerHandle timerHandle;
+
 };
